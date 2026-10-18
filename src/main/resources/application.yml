@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: ticketing-platform
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+aws:
+  region: ${AWS_REGION:us-east-1}
+  # Leave empty to use real AWS endpoints. Set to http://localhost:4566 for LocalStack.
+  endpoint: ${AWS_ENDPOINT:}
+  credentials:
+    # Only for local development. In AWS rely on the default credential chain (IAM roles).
+    access-key: ${AWS_ACCESS_KEY_ID:}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:}
+  dynamodb:
+    events-table: ${DYNAMODB_EVENTS_TABLE:events}
+    tickets-table: ${DYNAMODB_TICKETS_TABLE:tickets}
+    orders-table: ${DYNAMODB_ORDERS_TABLE:orders}
+  sqs:
+    purchase-queue-url: ${SQS_PURCHASE_QUEUE_URL:http://localhost:4566/000000000000/purchase-requests}
+    max-messages: 10
+    wait-time-seconds: 20
+
+ticketing:
+  reservation:
+    ttl: ${RESERVATION_TTL:10m}
+    cleanup-interval: ${RESERVATION_CLEANUP_INTERVAL:30s}
+
+logging:
+  level:
+    com.nequi.ticketing: ${LOG_LEVEL:INFO}

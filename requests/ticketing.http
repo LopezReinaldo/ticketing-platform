@@ -1,0 +1,44 @@
+# REST Client / IntelliJ HTTP Client collection
+@baseUrl = http://localhost:8080
+@eventId = REPLACE_WITH_EVENT_ID
+@orderId = REPLACE_WITH_ORDER_ID
+
+### Create event
+POST {{baseUrl}}/api/v1/events
+Content-Type: application/json
+
+{
+  "name": "Rock Fest",
+  "date": "2027-05-20T20:00:00Z",
+  "venue": "Movistar Arena",
+  "totalCapacity": 100
+}
+
+### List events
+GET {{baseUrl}}/api/v1/events
+
+### Get event
+GET {{baseUrl}}/api/v1/events/{{eventId}}
+
+### Real-time availability
+GET {{baseUrl}}/api/v1/events/{{eventId}}/availability
+
+### Place order (async, returns 202)
+POST {{baseUrl}}/api/v1/orders
+Content-Type: application/json
+Idempotency-Key: {{$uuid}}
+
+{
+  "eventId": "{{eventId}}",
+  "customerId": "customer-1",
+  "quantity": 2
+}
+
+### Get order status
+GET {{baseUrl}}/api/v1/orders/{{orderId}}
+
+### Confirm order
+POST {{baseUrl}}/api/v1/orders/{{orderId}}/confirm
+
+### Health
+GET {{baseUrl}}/actuator/health

@@ -1,0 +1,10 @@
+.gradle/
+build/
+.git/
+.idea/
+*.iml
+.env
+docker/data/
+README.md
+docs/
+requests/

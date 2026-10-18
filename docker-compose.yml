@@ -1,0 +1,31 @@
+services:
+  localstack:
+    image: localstack/localstack:4
+    container_name: ticketing-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: dynamodb,sqs
+      DEBUG: 0
+      AWS_DEFAULT_REGION: ${AWS_REGION:-us-east-1}
+    volumes:
+      - ./docker/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "awslocal dynamodb list-tables && awslocal sqs list-queues"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    container_name: ticketing-app
+    depends_on:
+      localstack:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env.example
+    environment:
+      AWS_ENDPOINT: http://localstack:4566
+      SQS_PURCHASE_QUEUE_URL: http://localstack:4566/000000000000/purchase-requests
