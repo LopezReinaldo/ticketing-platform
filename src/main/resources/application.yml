@@ -18,6 +18,10 @@ management:
       probes:
         enabled: true
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 aws:
   region: ${AWS_REGION:us-east-1}
   # Leave empty to use real AWS endpoints. Set to http://localhost:4566 for LocalStack.

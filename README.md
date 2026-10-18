@@ -68,6 +68,7 @@ docker compose down -v
 
 LocalStack provisions the tables and queues on startup via `docker/localstack/init-aws.sh`.
 The API is available at `http://localhost:8080`, health at `/actuator/health`.
+Interactive API documentation is available at `http://localhost:8080/swagger-ui.html` (OpenAPI JSON: `/v3/api-docs`).
 
 ## Running locally (without the app container)
 
@@ -76,6 +77,8 @@ docker compose up localstack          # infrastructure only
 cp .env.example .env                  # adjust if needed
 ./gradlew bootRun                     # uses application.yml defaults -> localhost:4566
 ```
+
+On Windows, use `.\gradlew.bat bootRun` after setting the LocalStack environment variables in the same PowerShell session.
 
 ## Configuration
 

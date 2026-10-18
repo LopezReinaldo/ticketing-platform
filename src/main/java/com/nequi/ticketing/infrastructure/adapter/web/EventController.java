@@ -6,6 +6,8 @@ import com.nequi.ticketing.application.usecase.GetEventUseCase;
 import com.nequi.ticketing.infrastructure.adapter.web.dto.AvailabilityResponse;
 import com.nequi.ticketing.infrastructure.adapter.web.dto.CreateEventRequest;
 import com.nequi.ticketing.infrastructure.adapter.web.dto.EventResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v1/events")
+@Tag(name = "Events", description = "Create and browse events and their ticket availability")
 public class EventController {
 
     private final CreateEventUseCase createEvent;
@@ -35,22 +38,26 @@ public class EventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create an event", description = "Creates an event and its ticket inventory.")
     public Mono<EventResponse> create(@Valid @RequestBody CreateEventRequest request) {
         return createEvent.execute(request.name(), request.date(), request.venue(), request.totalCapacity())
                 .map(EventResponse::from);
     }
 
     @GetMapping
+    @Operation(summary = "List events")
     public Flux<EventResponse> list() {
         return getEvent.all().map(EventResponse::from);
     }
 
     @GetMapping("/{eventId}")
+    @Operation(summary = "Get an event")
     public Mono<EventResponse> get(@PathVariable String eventId) {
         return getEvent.byId(eventId).map(EventResponse::from);
     }
 
     @GetMapping("/{eventId}/availability")
+    @Operation(summary = "Get ticket availability")
     public Mono<AvailabilityResponse> availability(@PathVariable String eventId) {
         return getAvailability.execute(eventId).map(AvailabilityResponse::from);
     }
